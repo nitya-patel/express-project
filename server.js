@@ -16,15 +16,33 @@ async function readFile() {
 app.get("/products", async(req,res)=>{
     try{
     let products = await readFile();
-    console.log(products);
     res.json(products);
     }catch(err){
         console.log(err);
     }
 });
 
+app.get("/products/:id", async(req,res)=>{
+    try{
+    let products = await readFile();
+    let {id} = req.params;
+    id = Number(id);
+    let product = products.find((item) => {return item.id === id});
+    res.json(product);
+    }catch(err){
+        console.log(err);
+    }
+});
 
+async function readFileWithDelay() {
+    await new Promise((resolve,reject)=>{
+        setTimeout(resolve,1500);
+    });
+    let products = await readFile();
+    return products;
+}
 
+readFileWithDelay();
 app.listen(port, () => {
     console.log(`Example app listening on ${port}`)
 })
