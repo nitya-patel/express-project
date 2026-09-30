@@ -5,6 +5,9 @@ const path = require("path")
 const app = express();
 
 const port = 3000
+
+const cache = {}
+
 const pathToFile = path.join(__dirname, "db.json");
 // Get /products
 async function readFile() {
@@ -15,7 +18,13 @@ async function readFile() {
 
 app.get("/products", async(req,res)=>{
     try{
+    let key = req.url;
+    let value = cache[key];
+    if(value){ // if value exist in the cache
+        return res.json(value);
+    }
     let products = await readFile();
+    cache[key] = products;
     res.json(products);
     }catch(err){
         console.log(err);
